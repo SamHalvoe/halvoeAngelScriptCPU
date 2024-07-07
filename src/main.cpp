@@ -10,11 +10,21 @@ uint16_t rectX = 5;
 
 void setup()
 {
-  Serial.begin(115200);
-  while (not Serial) { delay(1000); }
-  Serial.println("Serial to USB is ready.");
-  while (not g_gpuInterface.begin()) { delay(1000); }
-  Serial.println("Serial to GPU is ready.");
+  pinMode(LED_BUILTIN, OUTPUT);
+
+  #ifdef HALVOE_GPU_DEBUG
+    Serial.begin(115200);
+    while (not Serial) { delay(1000); }
+    Serial.println("Serial to USB is ready.");
+    Serial.println("call g_gpuInterface.begin()");
+  #endif // HALVOE_GPU_DEBUG
+
+  while (not g_gpuInterface.begin()) { digitalWrite(LED_BUILTIN, HIGH); delay(200); digitalWrite(LED_BUILTIN, LOW); }
+  
+  #ifdef HALVOE_GPU_DEBUG
+    Serial.println("g_gpuInterface.begin() finished");
+  #endif // HALVOE_GPU_DEBUG
+
   interval = 0;
 }
 
