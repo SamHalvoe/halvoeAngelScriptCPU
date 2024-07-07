@@ -20,20 +20,23 @@ void setup()
 
 void loop()
 {
-  if (interval >= 10)
+  if (g_gpuInterface.isGPUReady())
   {
-    rectX = rectX + 1;
-    if (rectX == 320 - 25) { rectX = 5; }
-    g_shouldUpdate = true;
-    interval = 0;
-  }
+    if (interval >= 10)
+    {
+      rectX = rectX + 1;
+      if (rectX == 320 - 25) { rectX = 5; }
+      g_shouldUpdate = true;
+      interval = 0;
+    }
 
-  if (g_shouldUpdate)
-  {
-    g_gpuInterface.sendFillScreen();
-    g_gpuInterface.sendFillRect(rectX, 5, 25, 25, 255);
-    g_gpuInterface.sendSwap();
+    if (g_shouldUpdate)
+    {
+      g_gpuInterface.sendFillScreen(0);
+      g_gpuInterface.sendFillRect(rectX, 5, 25, 25, 255);
+      g_gpuInterface.sendSwap();
 
-    g_shouldUpdate = false;
+      g_shouldUpdate = false;
+    }
   }
 }
