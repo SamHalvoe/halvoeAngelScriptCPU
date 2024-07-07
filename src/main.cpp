@@ -44,6 +44,9 @@ void loop()
     {
       g_gpuInterface.sendFillScreen(0);
       g_gpuInterface.sendFillRect(rectX, 5, 25, 25, 255);
+      g_gpuInterface.sendSetCursor(5, 40);
+      g_gpuInterface.sendSetTextColor(255);
+      g_gpuInterface.sendPrint("Hello GPU :)");
       g_gpuInterface.sendSwap();
 
       g_shouldUpdate = false;
