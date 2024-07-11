@@ -4,9 +4,8 @@
 #include "SerialGFXInterface_atCPU.hpp"
 
 halvoeGPU::atCPU::SerialGFXInterface g_gpuInterface(Serial8);
-bool g_shouldUpdate = true;
-elapsedMillis interval;
-uint16_t rectX = 5;
+const unsigned long g_screenUpdateInterval = 32000;
+elapsedMicros timeSinceScreenUpdate;
 
 void setup()
 {
@@ -24,32 +23,24 @@ void setup()
   #ifdef HALVOE_GPU_DEBUG
     Serial.println("g_gpuInterface.begin() finished");
   #endif // HALVOE_GPU_DEBUG
-
-  interval = 0;
 }
 
 void loop()
 {
   if (g_gpuInterface.isGPUReady())
   {
-    if (interval >= 10)
-    {
-      rectX = rectX + 1;
-      if (rectX == 320 - 25) { rectX = 5; }
-      g_shouldUpdate = true;
-      interval = 0;
-    }
-
-    if (g_shouldUpdate)
+    if (timeSinceScreenUpdate >= g_screenUpdateInterval)
     {
       g_gpuInterface.sendFillScreen(0);
-      g_gpuInterface.sendFillRect(rectX, 5, 25, 25, 255);
-      g_gpuInterface.sendSetCursor(5, 40);
       g_gpuInterface.sendSetTextColor(255);
-      g_gpuInterface.sendPrint("Hello GPU :)");
+      for (uint16_t y = 35; y < 235; y = y + 10)
+      {
+        g_gpuInterface.sendSetCursor(5, y);
+        g_gpuInterface.sendPrint("Lorem ipsum dolor sit amet, consetetur est halvoe.");
+      }
       g_gpuInterface.sendSwap();
 
-      g_shouldUpdate = false;
+      timeSinceScreenUpdate = 0;
     }
   }
 }
